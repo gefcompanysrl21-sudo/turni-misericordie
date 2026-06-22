@@ -39,9 +39,12 @@
     box-shadow:0 2px 8px rgba(0,0,0,.06);}
   .totbig{font-size:18px; color:#5a6a6a;}
   .totbig b{font-size:34px; color:var(--teal); display:block; line-height:1.1; margin-top:2px;}
-  .totsedi{display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:12px;}
+  .totsedi{display:flex; flex-wrap:wrap; gap:8px 18px; margin-top:8px;}
   .totsedi div{display:flex; align-items:center; gap:8px; font-size:17px;}
   .dot{width:16px; height:16px; border-radius:50%; flex:0 0 auto;}
+  .seclabel{font-size:13px; font-weight:800; color:#92a3a3; text-transform:uppercase;
+    letter-spacing:.6px; margin:16px 0 2px;}
+  .seclabel.hide{display:none;}
 
   /* entry list */
   .entry{background:var(--card); border-radius:16px; padding:14px 14px 14px 16px;
@@ -108,8 +111,11 @@
 
 <main>
   <div class="totcard">
-    <div class="totbig">Ore totali del mese <b id="totHours">0</b></div>
+    <div class="totbig">Ore totali del mese <b id="totHours">0 h</b></div>
+    <div class="seclabel" id="lblSede">Per sede</div>
     <div class="totsedi" id="totSedi"></div>
+    <div class="seclabel" id="lblPrest">Per prestazione</div>
+    <div class="totsedi" id="totPrest"></div>
   </div>
   <div id="list"></div>
   <button class="sharebtn" id="shareBtn">📤 Invia il riepilogo del mese</button>
@@ -160,6 +166,8 @@
 const SEDI = {
   "Montale":"#2E9E5B","Montemurlo":"#2D8FD5","Iolo":"#D64545","Parco Prato":"#E08A1E"
 };
+const SEDE_EMOJI = {"Montale":"🟢","Montemurlo":"🔵","Iolo":"🔴","Parco Prato":"🟠"};
+const PREST_EMOJI = {"Prelievi":"💉","Ambulatorio":"🩺","Formazione":"📚","Altro":"📌"};
 const MESI = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
 const GG = ["DOM","LUN","MAR","MER","GIO","VEN","SAB"];
 const KEY = "turni_v1";
@@ -185,6 +193,11 @@ function fmtDay(iso){
   const d=new Date(iso+"T00:00:00");
   return GG[d.getDay()]+" "+String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0");
 }
+function dayPretty(iso){
+  const d=new Date(iso+"T00:00:00");
+  const g=["Dom","Lun","Mar","Mer","Gio","Ven","Sab"][d.getDay()];
+  return g+" "+String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0");
+}
 
 function monthEntries(){
   return data.filter(e=>{
@@ -198,13 +211,14 @@ function render(){
   const es = monthEntries();
   const list = document.getElementById("list");
   list.innerHTML = "";
-  let tot=0; const perSede={};
+  let tot=0; const perSede={}, perPrest={};
   if(es.length===0){
     list.innerHTML='<div class="empty">Nessun turno questo mese.<br>Tocca «Aggiungi un turno» qui sotto.</div>';
   }
   es.forEach(e=>{
     const h=hours(e.start,e.end); tot+=h;
     perSede[e.sede]=(perSede[e.sede]||0)+h;
+    if(e.prest) perPrest[e.prest]=(perPrest[e.prest]||0)+h;
     const div=document.createElement("div");
     div.className="entry";
     div.style.borderLeftColor = SEDI[e.sede]||"#bbb";
@@ -225,6 +239,16 @@ function render(){
       ts.appendChild(d);
     }
   });
+  const tp=document.getElementById("totPrest"); tp.innerHTML="";
+  Object.keys(PREST_EMOJI).forEach(p=>{
+    if(perPrest[p]){
+      const d=document.createElement("div");
+      d.innerHTML='<span style="font-size:18px">'+PREST_EMOJI[p]+'</span>'+p+': <b>&nbsp;'+fmtH(perPrest[p])+' h</b>';
+      tp.appendChild(d);
+    }
+  });
+  document.getElementById("lblSede").classList.toggle("hide", Object.keys(perSede).length===0);
+  document.getElementById("lblPrest").classList.toggle("hide", Object.keys(perPrest).length===0);
 }
 
 /* ---- form ---- */
@@ -304,17 +328,29 @@ document.getElementById("cancelBtn").onclick=closeForm;
 document.getElementById("prevM").onclick=()=>{ curM--; if(curM<0){curM=11;curY--;} render(); };
 document.getElementById("nextM").onclick=()=>{ curM++; if(curM>11){curM=0;curY++;} render(); };
 
-document.getElementById("shareBtn").onclick=async()=>{
+function buildMonthText(){
   const es=monthEntries();
-  if(es.length===0){ alert("Non ci sono turni da inviare questo mese."); return; }
-  let tot=0; const perSede={};
-  let txt="🩺 Ore "+MESI[curM]+" "+curY+"\n\n";
+  let tot=0; const perSede={}, perPrest={};
+  const DIV="━━━━━━━━━━━━━";
+  let txt="🩺 *Le mie ore · "+MESI[curM]+" "+curY+"*\n"+DIV+"\n\n";
   es.forEach(e=>{
-    const h=hours(e.start,e.end); tot+=h; perSede[e.sede]=(perSede[e.sede]||0)+h;
-    txt+= fmtDay(e.date)+" — "+e.sede+(e.prest?" — "+e.prest:"")+" — "+e.start+"-"+e.end+" — "+fmtH(h)+"h\n";
+    const h=hours(e.start,e.end); tot+=h;
+    perSede[e.sede]=(perSede[e.sede]||0)+h;
+    if(e.prest) perPrest[e.prest]=(perPrest[e.prest]||0)+h;
+    txt+= (SEDE_EMOJI[e.sede]||"▪️")+" *"+dayPretty(e.date)+"* · "+e.sede+"\n";
+    txt+= (e.prest?(PREST_EMOJI[e.prest]||"")+" "+e.prest+" · ":"")+e.start+"–"+e.end+" · *"+fmtH(h)+" h*\n\n";
   });
-  txt+="\n— TOTALE: "+fmtH(tot)+" h —\n";
-  Object.keys(SEDI).forEach(s=>{ if(perSede[s]) txt+=s+": "+fmtH(perSede[s])+" h\n"; });
+  txt+=DIV+"\n💼 *TOTALE: "+fmtH(tot)+" h*\n\n📍 *Per sede*\n";
+  Object.keys(SEDI).forEach(s=>{ if(perSede[s]) txt+=(SEDE_EMOJI[s]||"▪️")+" "+s+": *"+fmtH(perSede[s])+" h*\n"; });
+  if(Object.keys(perPrest).length){
+    txt+="\n🧾 *Per prestazione*\n";
+    Object.keys(PREST_EMOJI).forEach(p=>{ if(perPrest[p]) txt+=(PREST_EMOJI[p]||"")+" "+p+": *"+fmtH(perPrest[p])+" h*\n"; });
+  }
+  return txt;
+}
+document.getElementById("shareBtn").onclick=async()=>{
+  if(monthEntries().length===0){ alert("Non ci sono turni da inviare questo mese."); return; }
+  const txt=buildMonthText();
   try{
     if(navigator.share){ await navigator.share({title:"Le mie ore", text:txt}); }
     else{ window.location.href="mailto:?subject="+encodeURIComponent("Ore "+MESI[curM]+" "+curY)+"&body="+encodeURIComponent(txt); }
