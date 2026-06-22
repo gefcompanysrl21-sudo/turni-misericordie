@@ -39,12 +39,18 @@
     box-shadow:0 2px 8px rgba(0,0,0,.06);}
   .totbig{font-size:18px; color:#5a6a6a;}
   .totbig b{font-size:34px; color:var(--teal); display:block; line-height:1.1; margin-top:2px;}
-  .totsedi{display:flex; flex-wrap:wrap; gap:8px 18px; margin-top:8px;}
-  .totsedi div{display:flex; align-items:center; gap:8px; font-size:17px;}
-  .dot{width:16px; height:16px; border-radius:50%; flex:0 0 auto;}
+  .dot{width:15px; height:15px; border-radius:50%; flex:0 0 auto;}
   .seclabel{font-size:13px; font-weight:800; color:#92a3a3; text-transform:uppercase;
-    letter-spacing:.6px; margin:16px 0 2px;}
+    letter-spacing:.6px; margin:16px 0 4px;}
   .seclabel.hide{display:none;}
+  .sedeblock{margin-top:10px; padding-top:10px; border-top:1px solid #eef1f1;}
+  .sedeblock:first-of-type{border-top:none; margin-top:4px;}
+  .shead{display:flex; align-items:center; gap:8px; font-size:18px;}
+  .shead .sname{font-weight:800;}
+  .shead .stot{margin-left:auto; font-weight:800; color:var(--teal);}
+  .ssub{margin:3px 0 0 23px;}
+  .ssub div{display:flex; align-items:center; gap:6px; font-size:16px; color:#5a6a6a; margin-top:3px;}
+  .ssub b{color:var(--ink);}
 
   /* entry list */
   .entry{background:var(--card); border-radius:16px; padding:14px 14px 14px 16px;
@@ -60,6 +66,7 @@
   .addbtn{position:fixed; left:14px; right:14px; bottom:calc(14px + env(safe-area-inset-bottom));
     background:var(--teal); color:#fff; border:none; border-radius:18px; padding:18px;
     font-size:22px; font-weight:800; box-shadow:0 4px 14px rgba(15,92,92,.4); z-index:20;}
+  .addbtn .plus{display:inline-block; font-size:26px; font-weight:800; color:#fff; margin-right:6px;}
   .sharebtn{width:100%; background:#fff; color:var(--teal); border:2px solid var(--teal);
     border-radius:16px; padding:15px; font-size:19px; font-weight:700; margin-top:4px;}
 
@@ -67,22 +74,23 @@
   #form{position:fixed; inset:0; background:var(--bg); z-index:30; display:none;
     flex-direction:column;}
   #form.show{display:flex;}
-  .fhead{background:var(--teal); color:#fff; padding:16px;
-    padding-top:calc(16px + env(safe-area-inset-top)); display:flex; align-items:center; gap:12px;}
-  .fhead h2{margin:0; font-size:22px; font-weight:800; flex:1;}
-  .fhead button{background:rgba(255,255,255,.2); border:none; color:#fff; font-size:18px;
-    font-weight:700; padding:10px 14px; border-radius:12px;}
-  .fbody{flex:1; overflow:auto; padding:16px 16px 24px;}
-  .label{font-weight:800; font-size:17px; margin:18px 0 8px; color:#33474a;}
-  .label:first-child{margin-top:4px;}
+  .fhead{background:var(--teal); color:#fff; padding:14px 16px;
+    padding-top:calc(14px + env(safe-area-inset-top)); display:flex; align-items:center; gap:12px;}
+  .fhead h2{margin:0; font-size:21px; font-weight:800; flex:1;}
+  .fhead button{background:rgba(255,255,255,.2); border:none; color:#fff; font-size:17px;
+    font-weight:700; padding:9px 14px; border-radius:12px;}
+  .fbody{flex:1; overflow:auto; padding:12px 16px calc(28px + env(safe-area-inset-bottom));}
+  .label{font-weight:800; font-size:16px; margin:13px 0 6px; color:#33474a;}
+  .label:first-child{margin-top:2px;}
   input[type=date], input[type=time]{
-    width:100%; font-size:22px; padding:14px; border:2px solid var(--line);
-    border-radius:14px; background:#fff; color:var(--ink); font-family:inherit;}
-  .timerow{display:flex; gap:12px;}
+    width:100%; font-size:20px; padding:12px 14px; border:2px solid var(--line);
+    border-radius:14px; background:#fff; color:var(--ink); font-family:inherit;
+    text-align:left; min-height:52px;}
+  .timerow{display:flex; gap:12px; margin-top:12px;}
   .timerow > div{flex:1;}
   .timerow .label{margin-top:0;}
-  .grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-  .chip{padding:16px 10px; border-radius:14px; border:3px solid var(--line); background:#fff;
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .chip{padding:14px 8px; border-radius:14px; border:3px solid var(--line); background:#fff;
     font-size:18px; font-weight:700; text-align:center; color:#33474a;}
   .chip.sel{color:#fff; border-color:transparent;}
   .chip.sede.sel.montale{background:var(--montale);}
@@ -90,10 +98,10 @@
   .chip.sede.sel.iolo{background:var(--iolo);}
   .chip.sede.sel.parco{background:var(--parco);}
   .chip.prest.sel{background:var(--teal);}
-  .oreview{margin-top:18px; text-align:center; font-size:19px; color:#586868;}
+  .oreview{margin-top:14px; text-align:center; font-size:19px; color:#586868;}
   .oreview b{font-size:30px; color:var(--teal);}
   .savebtn{width:100%; background:var(--teal); color:#fff; border:none; border-radius:16px;
-    padding:18px; font-size:22px; font-weight:800; margin-top:22px;}
+    padding:18px; font-size:22px; font-weight:800; margin-top:16px;}
   .delbtn{width:100%; background:#fff; color:var(--iolo); border:2px solid var(--iolo);
     border-radius:16px; padding:14px; font-size:18px; font-weight:700; margin-top:12px;}
   .hint{font-size:15px; color:#7a8a8a; text-align:center; margin-top:14px;}
@@ -112,16 +120,14 @@
 <main>
   <div class="totcard">
     <div class="totbig">Ore totali del mese <b id="totHours">0 h</b></div>
-    <div class="seclabel" id="lblSede">Per sede</div>
-    <div class="totsedi" id="totSedi"></div>
-    <div class="seclabel" id="lblPrest">Per prestazione</div>
-    <div class="totsedi" id="totPrest"></div>
+    <div class="seclabel" id="lblSummary">Da fatturare — per sede</div>
+    <div id="summary"></div>
   </div>
   <div id="list"></div>
   <button class="sharebtn" id="shareBtn">📤 Invia il riepilogo del mese</button>
 </main>
 
-<button class="addbtn" id="addBtn">➕ Aggiungi un turno</button>
+<button class="addbtn" id="addBtn"><span class="plus">+</span>Aggiungi un turno</button>
 
 <!-- FORM -->
 <div id="form">
@@ -149,7 +155,7 @@
       <button type="button" class="chip prest" data-prest="Altro">Altro</button>
     </div>
 
-    <div class="timerow" style="margin-top:18px;">
+    <div class="timerow">
       <div><div class="label">Dalle</div><input type="time" id="fStart"></div>
       <div><div class="label">Alle</div><input type="time" id="fEnd"></div>
     </div>
@@ -167,7 +173,9 @@ const SEDI = {
   "Montale":"#2E9E5B","Montemurlo":"#2D8FD5","Iolo":"#D64545","Parco Prato":"#E08A1E"
 };
 const SEDE_EMOJI = {"Montale":"🟢","Montemurlo":"🔵","Iolo":"🔴","Parco Prato":"🟠"};
-const PREST_EMOJI = {"Prelievi":"💉","Ambulatorio":"🩺","Formazione":"📚","Altro":"📌"};
+const PREST_EMOJI = {"Prelievi":"💉","Ambulatorio":"🩺","Formazione":"📚","Altro":"📌","Varie":"📌"};
+const SEDE_ORDER = ["Montale","Montemurlo","Iolo","Parco Prato"];
+const PREST_ORDER = ["Prelievi","Ambulatorio","Formazione","Altro","Varie"];
 const MESI = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
 const GG = ["DOM","LUN","MAR","MER","GIO","VEN","SAB"];
 const KEY = "turni_v1";
@@ -206,19 +214,30 @@ function monthEntries(){
   }).sort((a,b)=> a.date<b.date?-1:a.date>b.date?1:(a.start||"").localeCompare(b.start||""));
 }
 
+// Aggrega per SEDE (ogni Misericordia si fattura a parte), con dentro le ore per prestazione
+function aggregate(es){
+  let tot=0; const bySede={};
+  es.forEach(e=>{
+    const h=hours(e.start,e.end); tot+=h;
+    const s=e.sede||"Altro";
+    if(!bySede[s]) bySede[s]={total:0, byPrest:{}};
+    bySede[s].total+=h;
+    const p=e.prest||"Varie";
+    bySede[s].byPrest[p]=(bySede[s].byPrest[p]||0)+h;
+  });
+  return {tot, bySede};
+}
+
 function render(){
   document.getElementById("mlabel").textContent = MESI[curM]+" "+curY;
   const es = monthEntries();
   const list = document.getElementById("list");
   list.innerHTML = "";
-  let tot=0; const perSede={}, perPrest={};
   if(es.length===0){
     list.innerHTML='<div class="empty">Nessun turno questo mese.<br>Tocca «Aggiungi un turno» qui sotto.</div>';
   }
   es.forEach(e=>{
-    const h=hours(e.start,e.end); tot+=h;
-    perSede[e.sede]=(perSede[e.sede]||0)+h;
-    if(e.prest) perPrest[e.prest]=(perPrest[e.prest]||0)+h;
+    const h=hours(e.start,e.end);
     const div=document.createElement("div");
     div.className="entry";
     div.style.borderLeftColor = SEDI[e.sede]||"#bbb";
@@ -230,25 +249,26 @@ function render(){
     div.onclick=()=>openForm(e.id);
     list.appendChild(div);
   });
+
+  // ---- riepilogo per sede (da fatturare) ----
+  const {tot, bySede} = aggregate(es);
   document.getElementById("totHours").textContent = fmtH(tot)+" h";
-  const ts=document.getElementById("totSedi"); ts.innerHTML="";
-  Object.keys(SEDI).forEach(s=>{
-    if(perSede[s]){
-      const d=document.createElement("div");
-      d.innerHTML='<span class="dot" style="background:'+SEDI[s]+'"></span>'+s+': <b>&nbsp;'+fmtH(perSede[s])+' h</b>';
-      ts.appendChild(d);
-    }
+  const box=document.getElementById("summary"); box.innerHTML="";
+  let any=false;
+  SEDE_ORDER.forEach(s=>{
+    if(!bySede[s]) return;
+    any=true;
+    let sub="";
+    PREST_ORDER.forEach(p=>{
+      if(bySede[s].byPrest[p]) sub+='<div>'+(PREST_EMOJI[p]||"📌")+' '+p+' · <b>'+fmtH(bySede[s].byPrest[p])+' h</b></div>';
+    });
+    const blk=document.createElement("div"); blk.className="sedeblock";
+    blk.innerHTML='<div class="shead"><span class="dot" style="background:'+SEDI[s]+'"></span>'
+      +'<span class="sname">'+s+'</span><span class="stot">'+fmtH(bySede[s].total)+' h</span></div>'
+      +'<div class="ssub">'+sub+'</div>';
+    box.appendChild(blk);
   });
-  const tp=document.getElementById("totPrest"); tp.innerHTML="";
-  Object.keys(PREST_EMOJI).forEach(p=>{
-    if(perPrest[p]){
-      const d=document.createElement("div");
-      d.innerHTML='<span style="font-size:18px">'+PREST_EMOJI[p]+'</span>'+p+': <b>&nbsp;'+fmtH(perPrest[p])+' h</b>';
-      tp.appendChild(d);
-    }
-  });
-  document.getElementById("lblSede").classList.toggle("hide", Object.keys(perSede).length===0);
-  document.getElementById("lblPrest").classList.toggle("hide", Object.keys(perPrest).length===0);
+  document.getElementById("lblSummary").classList.toggle("hide", !any);
 }
 
 /* ---- form ---- */
@@ -279,6 +299,7 @@ function openForm(id){
   setSel("sedeGrid","data-sede",selSede);
   setSel("prestGrid","data-prest",selPrest);
   updateOre();
+  document.querySelector(".fbody").scrollTop=0;
   f.classList.add("show");
 }
 function closeForm(){ document.getElementById("form").classList.remove("show"); }
@@ -312,7 +333,6 @@ document.getElementById("saveBtn").onclick=()=>{
     data.push({id:uid(),date,start,end,sede:selSede,prest:selPrest});
   }
   save();
-  // mostra il mese del turno salvato
   const d=new Date(date+"T00:00:00"); curY=d.getFullYear(); curM=d.getMonth();
   closeForm(); render();
 };
@@ -330,22 +350,24 @@ document.getElementById("nextM").onclick=()=>{ curM++; if(curM>11){curM=0;curY++
 
 function buildMonthText(){
   const es=monthEntries();
-  let tot=0; const perSede={}, perPrest={};
+  const {tot, bySede}=aggregate(es);
   const DIV="━━━━━━━━━━━━━";
   let txt="🩺 *Le mie ore · "+MESI[curM]+" "+curY+"*\n"+DIV+"\n\n";
   es.forEach(e=>{
-    const h=hours(e.start,e.end); tot+=h;
-    perSede[e.sede]=(perSede[e.sede]||0)+h;
-    if(e.prest) perPrest[e.prest]=(perPrest[e.prest]||0)+h;
+    const h=hours(e.start,e.end);
     txt+= (SEDE_EMOJI[e.sede]||"▪️")+" *"+dayPretty(e.date)+"* · "+e.sede+"\n";
     txt+= (e.prest?(PREST_EMOJI[e.prest]||"")+" "+e.prest+" · ":"")+e.start+"–"+e.end+" · *"+fmtH(h)+" h*\n\n";
   });
-  txt+=DIV+"\n💼 *TOTALE: "+fmtH(tot)+" h*\n\n📍 *Per sede*\n";
-  Object.keys(SEDI).forEach(s=>{ if(perSede[s]) txt+=(SEDE_EMOJI[s]||"▪️")+" "+s+": *"+fmtH(perSede[s])+" h*\n"; });
-  if(Object.keys(perPrest).length){
-    txt+="\n🧾 *Per prestazione*\n";
-    Object.keys(PREST_EMOJI).forEach(p=>{ if(perPrest[p]) txt+=(PREST_EMOJI[p]||"")+" "+p+": *"+fmtH(perPrest[p])+" h*\n"; });
-  }
+  txt+=DIV+"\n💶 *DA FATTURARE — per sede*\n\n";
+  SEDE_ORDER.forEach(s=>{
+    if(!bySede[s]) return;
+    txt+=(SEDE_EMOJI[s]||"▪️")+" *"+s+" — "+fmtH(bySede[s].total)+" h*\n";
+    PREST_ORDER.forEach(p=>{
+      if(bySede[s].byPrest[p]) txt+="    "+(PREST_EMOJI[p]||"📌")+" "+p+": "+fmtH(bySede[s].byPrest[p])+" h\n";
+    });
+    txt+="\n";
+  });
+  txt+=DIV+"\n💼 *TOTALE MESE: "+fmtH(tot)+" h*";
   return txt;
 }
 document.getElementById("shareBtn").onclick=async()=>{
