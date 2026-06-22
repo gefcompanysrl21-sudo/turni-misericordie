@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Le mie ore</title>
+<meta name="theme-color" content="#0F5C5C">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  :root{
+    --teal:#0F5C5C; --ink:#1d2b2b; --bg:#f4f6f6; --card:#ffffff;
+    --montale:#2E9E5B; --montemurlo:#2D8FD5; --iolo:#D64545; --parco:#E08A1E;
+    --line:#dfe5e5;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:-apple-system,Roboto,"Segoe UI",system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); font-size:19px; line-height:1.35;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  header{
+    background:var(--teal); color:#fff; padding:16px 16px calc(14px);
+    padding-top:calc(14px + env(safe-area-inset-top));
+    text-align:center; position:sticky; top:0; z-index:10;
+  }
+  header h1{margin:0; font-size:24px; font-weight:800; letter-spacing:.3px;}
+  .monthnav{display:flex; align-items:center; justify-content:center; gap:14px; margin-top:10px;}
+  .monthnav button{
+    background:rgba(255,255,255,.18); color:#fff; border:none; width:48px; height:48px;
+    border-radius:14px; font-size:26px; font-weight:800;
+  }
+  .monthnav .mlabel{font-size:20px; font-weight:700; min-width:160px;}
+  main{padding:14px 14px 120px;}
+
+  /* totals card */
+  .totcard{background:var(--card); border-radius:18px; padding:16px; margin-bottom:14px;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  .totbig{font-size:18px; color:#5a6a6a;}
+  .totbig b{font-size:34px; color:var(--teal); display:block; line-height:1.1; margin-top:2px;}
+  .totsedi{display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:12px;}
+  .totsedi div{display:flex; align-items:center; gap:8px; font-size:17px;}
+  .dot{width:16px; height:16px; border-radius:50%; flex:0 0 auto;}
+
+  /* entry list */
+  .entry{background:var(--card); border-radius:16px; padding:14px 14px 14px 16px;
+    margin-bottom:10px; display:flex; align-items:center; gap:12px;
+    box-shadow:0 1px 4px rgba(0,0,0,.06); border-left:10px solid #ccc;}
+  .entry .info{flex:1; min-width:0;}
+  .entry .day{font-weight:800; font-size:18px;}
+  .entry .meta{color:#586868; font-size:16px; margin-top:2px;}
+  .entry .hrs{font-weight:800; font-size:20px; color:var(--teal); white-space:nowrap;}
+  .empty{text-align:center; color:#7a8a8a; padding:40px 20px; font-size:18px;}
+
+  /* big add button (fixed) */
+  .addbtn{position:fixed; left:14px; right:14px; bottom:calc(14px + env(safe-area-inset-bottom));
+    background:var(--teal); color:#fff; border:none; border-radius:18px; padding:18px;
+    font-size:22px; font-weight:800; box-shadow:0 4px 14px rgba(15,92,92,.4); z-index:20;}
+  .sharebtn{width:100%; background:#fff; color:var(--teal); border:2px solid var(--teal);
+    border-radius:16px; padding:15px; font-size:19px; font-weight:700; margin-top:4px;}
+
+  /* form screen */
+  #form{position:fixed; inset:0; background:var(--bg); z-index:30; display:none;
+    flex-direction:column;}
+  #form.show{display:flex;}
+  .fhead{background:var(--teal); color:#fff; padding:16px;
+    padding-top:calc(16px + env(safe-area-inset-top)); display:flex; align-items:center; gap:12px;}
+  .fhead h2{margin:0; font-size:22px; font-weight:800; flex:1;}
+  .fhead button{background:rgba(255,255,255,.2); border:none; color:#fff; font-size:18px;
+    font-weight:700; padding:10px 14px; border-radius:12px;}
+  .fbody{flex:1; overflow:auto; padding:16px 16px 24px;}
+  .label{font-weight:800; font-size:17px; margin:18px 0 8px; color:#33474a;}
+  .label:first-child{margin-top:4px;}
+  input[type=date], input[type=time]{
+    width:100%; font-size:22px; padding:14px; border:2px solid var(--line);
+    border-radius:14px; background:#fff; color:var(--ink); font-family:inherit;}
+  .timerow{display:flex; gap:12px;}
+  .timerow > div{flex:1;}
+  .timerow .label{margin-top:0;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .chip{padding:16px 10px; border-radius:14px; border:3px solid var(--line); background:#fff;
+    font-size:18px; font-weight:700; text-align:center; color:#33474a;}
+  .chip.sel{color:#fff; border-color:transparent;}
+  .chip.sede.sel.montale{background:var(--montale);}
+  .chip.sede.sel.montemurlo{background:var(--montemurlo);}
+  .chip.sede.sel.iolo{background:var(--iolo);}
+  .chip.sede.sel.parco{background:var(--parco);}
+  .chip.prest.sel{background:var(--teal);}
+  .oreview{margin-top:18px; text-align:center; font-size:19px; color:#586868;}
+  .oreview b{font-size:30px; color:var(--teal);}
+  .savebtn{width:100%; background:var(--teal); color:#fff; border:none; border-radius:16px;
+    padding:18px; font-size:22px; font-weight:800; margin-top:22px;}
+  .delbtn{width:100%; background:#fff; color:var(--iolo); border:2px solid var(--iolo);
+    border-radius:16px; padding:14px; font-size:18px; font-weight:700; margin-top:12px;}
+  .hint{font-size:15px; color:#7a8a8a; text-align:center; margin-top:14px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Le mie ore</h1>
+  <div class="monthnav">
+    <button id="prevM" aria-label="Mese precedente">‹</button>
+    <div class="mlabel" id="mlabel">—</div>
+    <button id="nextM" aria-label="Mese successivo">›</button>
+  </div>
+</header>
+
+<main>
+  <div class="totcard">
+    <div class="totbig">Ore totali del mese <b id="totHours">0</b></div>
+    <div class="totsedi" id="totSedi"></div>
+  </div>
+  <div id="list"></div>
+  <button class="sharebtn" id="shareBtn">📤 Invia il riepilogo del mese</button>
+</main>
+
+<button class="addbtn" id="addBtn">➕ Aggiungi un turno</button>
+
+<!-- FORM -->
+<div id="form">
+  <div class="fhead">
+    <button id="cancelBtn">Annulla</button>
+    <h2 id="formTitle">Nuovo turno</h2>
+  </div>
+  <div class="fbody">
+    <div class="label">Giorno</div>
+    <input type="date" id="fDate">
+
+    <div class="label">Dove</div>
+    <div class="grid" id="sedeGrid">
+      <button type="button" class="chip sede montale"   data-sede="Montale">Montale</button>
+      <button type="button" class="chip sede montemurlo" data-sede="Montemurlo">Montemurlo</button>
+      <button type="button" class="chip sede iolo"       data-sede="Iolo">Iolo</button>
+      <button type="button" class="chip sede parco"      data-sede="Parco Prato">Parco Prato</button>
+    </div>
+
+    <div class="label">Cosa</div>
+    <div class="grid" id="prestGrid">
+      <button type="button" class="chip prest" data-prest="Prelievi">Prelievi</button>
+      <button type="button" class="chip prest" data-prest="Ambulatorio">Ambulatorio</button>
+      <button type="button" class="chip prest" data-prest="Formazione">Formazione</button>
+      <button type="button" class="chip prest" data-prest="Altro">Altro</button>
+    </div>
+
+    <div class="timerow" style="margin-top:18px;">
+      <div><div class="label">Dalle</div><input type="time" id="fStart"></div>
+      <div><div class="label">Alle</div><input type="time" id="fEnd"></div>
+    </div>
+
+    <div class="oreview">Ore: <b id="oreLive">0</b></div>
+
+    <button class="savebtn" id="saveBtn">✓ Salva</button>
+    <button class="delbtn" id="delBtn" style="display:none;">🗑 Elimina questo turno</button>
+    <div class="hint">Scrivi l'orario toccando l'ora (es. 9:00 – 14:00).</div>
+  </div>
+</div>
+
+<script>
+const SEDI = {
+  "Montale":"#2E9E5B","Montemurlo":"#2D8FD5","Iolo":"#D64545","Parco Prato":"#E08A1E"
+};
+const MESI = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
+const GG = ["DOM","LUN","MAR","MER","GIO","VEN","SAB"];
+const KEY = "turni_v1";
+
+let data = load();
+let cur = new Date(); let curY = cur.getFullYear(), curM = cur.getMonth();
+let editingId = null;
+let selSede = null, selPrest = null;
+
+function load(){ try{return JSON.parse(localStorage.getItem(KEY))||[];}catch(e){return [];} }
+function save(){ localStorage.setItem(KEY, JSON.stringify(data)); }
+function uid(){ return Date.now().toString(36)+Math.floor(Math.random()*1000).toString(36); }
+
+function hours(start,end){
+  if(!start||!end) return 0;
+  const [h1,m1]=start.split(":").map(Number), [h2,m2]=end.split(":").map(Number);
+  let mins=(h2*60+m2)-(h1*60+m1);
+  if(mins<0) mins=0;
+  return mins/60;
+}
+function fmtH(n){ return (Math.round(n*10)/10).toString().replace(".",","); }
+function fmtDay(iso){
+  const d=new Date(iso+"T00:00:00");
+  return GG[d.getDay()]+" "+String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0");
+}
+
+function monthEntries(){
+  return data.filter(e=>{
+    const d=new Date(e.date+"T00:00:00");
+    return d.getFullYear()===curY && d.getMonth()===curM;
+  }).sort((a,b)=> a.date<b.date?-1:a.date>b.date?1:(a.start||"").localeCompare(b.start||""));
+}
+
+function render(){
+  document.getElementById("mlabel").textContent = MESI[curM]+" "+curY;
+  const es = monthEntries();
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+  let tot=0; const perSede={};
+  if(es.length===0){
+    list.innerHTML='<div class="empty">Nessun turno questo mese.<br>Tocca «Aggiungi un turno» qui sotto.</div>';
+  }
+  es.forEach(e=>{
+    const h=hours(e.start,e.end); tot+=h;
+    perSede[e.sede]=(perSede[e.sede]||0)+h;
+    const div=document.createElement("div");
+    div.className="entry";
+    div.style.borderLeftColor = SEDI[e.sede]||"#bbb";
+    const orario = (e.start&&e.end)? e.start+"–"+e.end : "";
+    div.innerHTML =
+      '<div class="info"><div class="day">'+fmtDay(e.date)+' · '+(e.sede||"")+'</div>'+
+      '<div class="meta">'+[e.prest, orario].filter(Boolean).join(" · ")+'</div></div>'+
+      '<div class="hrs">'+fmtH(h)+' h</div>';
+    div.onclick=()=>openForm(e.id);
+    list.appendChild(div);
+  });
+  document.getElementById("totHours").textContent = fmtH(tot)+" h";
+  const ts=document.getElementById("totSedi"); ts.innerHTML="";
+  Object.keys(SEDI).forEach(s=>{
+    if(perSede[s]){
+      const d=document.createElement("div");
+      d.innerHTML='<span class="dot" style="background:'+SEDI[s]+'"></span>'+s+': <b>&nbsp;'+fmtH(perSede[s])+' h</b>';
+      ts.appendChild(d);
+    }
+  });
+}
+
+/* ---- form ---- */
+function setSel(grid,attr,val){
+  [...document.getElementById(grid).children].forEach(b=>{
+    b.classList.toggle("sel", b.getAttribute(attr)===val);
+  });
+}
+function openForm(id){
+  editingId = id||null;
+  const f=document.getElementById("form");
+  if(id){
+    const e=data.find(x=>x.id===id);
+    document.getElementById("formTitle").textContent="Modifica turno";
+    document.getElementById("fDate").value=e.date;
+    document.getElementById("fStart").value=e.start||"";
+    document.getElementById("fEnd").value=e.end||"";
+    selSede=e.sede||null; selPrest=e.prest||null;
+    document.getElementById("delBtn").style.display="block";
+  }else{
+    document.getElementById("formTitle").textContent="Nuovo turno";
+    const t=new Date();
+    document.getElementById("fDate").value=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
+    document.getElementById("fStart").value=""; document.getElementById("fEnd").value="";
+    selSede=null; selPrest=null;
+    document.getElementById("delBtn").style.display="none";
+  }
+  setSel("sedeGrid","data-sede",selSede);
+  setSel("prestGrid","data-prest",selPrest);
+  updateOre();
+  f.classList.add("show");
+}
+function closeForm(){ document.getElementById("form").classList.remove("show"); }
+function updateOre(){
+  document.getElementById("oreLive").textContent =
+    fmtH(hours(document.getElementById("fStart").value, document.getElementById("fEnd").value));
+}
+
+document.getElementById("sedeGrid").onclick=ev=>{
+  const b=ev.target.closest(".chip"); if(!b)return;
+  selSede=b.getAttribute("data-sede"); setSel("sedeGrid","data-sede",selSede);
+};
+document.getElementById("prestGrid").onclick=ev=>{
+  const b=ev.target.closest(".chip"); if(!b)return;
+  selPrest=b.getAttribute("data-prest"); setSel("prestGrid","data-prest",selPrest);
+};
+document.getElementById("fStart").oninput=updateOre;
+document.getElementById("fEnd").oninput=updateOre;
+
+document.getElementById("saveBtn").onclick=()=>{
+  const date=document.getElementById("fDate").value;
+  const start=document.getElementById("fStart").value;
+  const end=document.getElementById("fEnd").value;
+  if(!date){ alert("Scegli il giorno."); return; }
+  if(!selSede){ alert("Scegli dove (Montale, Montemurlo, Iolo o Parco Prato)."); return; }
+  if(!start||!end){ alert("Scrivi l'ora di inizio e di fine."); return; }
+  if(editingId){
+    const e=data.find(x=>x.id===editingId);
+    Object.assign(e,{date,start,end,sede:selSede,prest:selPrest});
+  }else{
+    data.push({id:uid(),date,start,end,sede:selSede,prest:selPrest});
+  }
+  save();
+  // mostra il mese del turno salvato
+  const d=new Date(date+"T00:00:00"); curY=d.getFullYear(); curM=d.getMonth();
+  closeForm(); render();
+};
+document.getElementById("delBtn").onclick=()=>{
+  if(!editingId)return;
+  if(confirm("Eliminare questo turno?")){
+    data=data.filter(x=>x.id!==editingId); save(); closeForm(); render();
+  }
+};
+
+document.getElementById("addBtn").onclick=()=>openForm(null);
+document.getElementById("cancelBtn").onclick=closeForm;
+document.getElementById("prevM").onclick=()=>{ curM--; if(curM<0){curM=11;curY--;} render(); };
+document.getElementById("nextM").onclick=()=>{ curM++; if(curM>11){curM=0;curY++;} render(); };
+
+document.getElementById("shareBtn").onclick=async()=>{
+  const es=monthEntries();
+  if(es.length===0){ alert("Non ci sono turni da inviare questo mese."); return; }
+  let tot=0; const perSede={};
+  let txt="🩺 Ore "+MESI[curM]+" "+curY+"\n\n";
+  es.forEach(e=>{
+    const h=hours(e.start,e.end); tot+=h; perSede[e.sede]=(perSede[e.sede]||0)+h;
+    txt+= fmtDay(e.date)+" — "+e.sede+(e.prest?" — "+e.prest:"")+" — "+e.start+"-"+e.end+" — "+fmtH(h)+"h\n";
+  });
+  txt+="\n— TOTALE: "+fmtH(tot)+" h —\n";
+  Object.keys(SEDI).forEach(s=>{ if(perSede[s]) txt+=s+": "+fmtH(perSede[s])+" h\n"; });
+  try{
+    if(navigator.share){ await navigator.share({title:"Le mie ore", text:txt}); }
+    else{ window.location.href="mailto:?subject="+encodeURIComponent("Ore "+MESI[curM]+" "+curY)+"&body="+encodeURIComponent(txt); }
+  }catch(e){}
+};
+
+render();
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
+</script>
+</body>
+</html>
