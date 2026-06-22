@@ -236,7 +236,13 @@ function render(){
   if(es.length===0){
     list.innerHTML='<div class="empty">Nessun turno questo mese.<br>Tocca «Aggiungi un turno» qui sotto.</div>';
   }
-  es.forEach(e=>{
+  // lista: l'ultimo inserito in cima
+  const esList=[...es].sort((a,b)=>{
+    const k=(b.created||0)-(a.created||0); if(k) return k;
+    const da=a.date+(a.start||""), db=b.date+(b.start||"");
+    return db<da?-1:db>da?1:0;
+  });
+  esList.forEach(e=>{
     const h=hours(e.start,e.end);
     const div=document.createElement("div");
     div.className="entry";
@@ -330,7 +336,7 @@ document.getElementById("saveBtn").onclick=()=>{
     const e=data.find(x=>x.id===editingId);
     Object.assign(e,{date,start,end,sede:selSede,prest:selPrest});
   }else{
-    data.push({id:uid(),date,start,end,sede:selSede,prest:selPrest});
+    data.push({id:uid(),created:Date.now(),date,start,end,sede:selSede,prest:selPrest});
   }
   save();
   const d=new Date(date+"T00:00:00"); curY=d.getFullYear(); curM=d.getMonth();
